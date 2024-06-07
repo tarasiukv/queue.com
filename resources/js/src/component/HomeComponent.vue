@@ -1,14 +1,12 @@
 <script setup>
 import {onMounted} from "vue";
 import useUsers from "../composables/user.js";
-const {user} = useUsers();
+const {user, getUsers } = useUsers();
 
 onMounted(async () => {
     window.Echo.channel('sending_to_user_email_channel')
         .listen('EmailSentEvent', async (e) => {
-            if (user_id) {
-                await searchWishlists(user_id);
-            }
+            await getUsers();
         })
         .error((err) => {
             console.log(err)
