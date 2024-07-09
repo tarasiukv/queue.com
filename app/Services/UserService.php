@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
-use App\Events\EmailSentEvent;
 use App\Jobs\EmailJob;
+use App\Models\User;
 
 class UserService
 {
     public function dispatchEmailJob($user) {
-        EmailJob::dispatch($user)->delay(now()->addSeconds(10));
+        EmailJob::dispatch($user)->delay(now()->addMinutes(5));
     }
 
 }

@@ -2,18 +2,17 @@
 
 namespace App\Jobs;
 
-use App\Events\EmailSentEvent;
-use App\Mail\UserMail;
 use App\Models\User;
+use App\Services\UserService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
+use Exception;
 
-class EmailJob implements ShouldQueue
+class UserJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -30,14 +29,13 @@ class EmailJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle(UserService $userService): void
     {
         try {
-            //        Mail::to($this->user->email)->send(new UserMail($this->user));
-            Log::info("Success sending to {$this->user->email}");
-            var_dump($this->user->email);
-        } catch (\Exception $e) {
-            Log::error("Failed sending to {$this->user->email}: " . $e->getMessage());
+            $userService->dispatchEmailJob($this->user);
+        } catch (Exception $e) {
+            Log::error('Failed to process user request: ' . $e->getMessage());
+            $this->release(60);
         }
     }
 }

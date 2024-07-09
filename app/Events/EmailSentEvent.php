@@ -34,9 +34,4 @@ class EmailSentEvent implements ShouldBroadcast
             new Channel('sending_to_user_email_channel'),
         ];
     }
-
-    public function broadcastWith()
-    {
-        return ['user' => $this->user, 'message' => 'Email sent successfully'];
-    }
 }

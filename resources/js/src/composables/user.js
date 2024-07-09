@@ -28,11 +28,6 @@ export default function useUsers() {
      */
     const getUser = async (id) => {
         try {
-            let request_config = {
-                headers: {
-                    'authorization': 'Bearer ' + localStorage.getItem('access_token')
-                }
-            }
             const response = await axios.get('/api/users/' + id, request_config)
 
             user.value = response.data.data
@@ -47,20 +42,9 @@ export default function useUsers() {
      */
     const storeUser = async () => {
         try {
-            let request_config = {}
-            user.value.user_role_id = 2;
-
-            const response = await axios.post('/api/users', user.value, request_config)
+            const response = await axios.post('/api/users', user.value)
         } catch (e) {
-            if (e.response && e.response.status === 422) {
-                if (e.response.data.errors.password) {
-                    alert(e.response.data.errors.password);
-                }
-                e.value = e.response.data.errors;
-            } else {
-                console.error('Error:', e);
-            }
-            console.log(e)
+            console.error('Error:', e);
         }
 
         return false;

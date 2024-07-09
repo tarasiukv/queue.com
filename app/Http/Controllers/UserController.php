@@ -2,26 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UserRequest;
+use App\Jobs\UserJob;
 use App\Models\User;
 use App\Services\UserService;
-use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    private $userService;
 
-    public function __construct(UserService $userService)
+    public function index()
     {
-        $this->userService = $userService;
+        return User::all();
     }
-    public function store(UserRequest $request)
+    public function store()
     {
-        $data = $request->validate();
-        $user = User::create($data);
+        $user = User::factory()->create();
+        if (!$user) {
+            return response()->json('User not created', 400);
+        }
 
-        $this->userService->dispatchEmailJob($user);
+        UserJob::dispatch($user);
+
+        $this->statusVerifyEmail($user);
 
         return response()->json($user, 201);
+    }
+
+    public function statusVerifyEmail(User $user)
+    {
+        $user->email_verified_at = now();
+        $user->save();
     }
 }
