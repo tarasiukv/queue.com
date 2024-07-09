@@ -22,6 +22,16 @@ onMounted(async () => {
                 user.emailSent = true;
             }
         });
+    window.Echo.channel('notify_user_created_channel')
+        .listen('EmailSentEvent', async (e) => {
+            const user = users.find(u => u.id === e.user.id);
+            if (user) {
+                user.emailSent = true;
+            }
+        })
+        .error((err) => {
+            console.log(err)
+        });
 })
 </script>
 

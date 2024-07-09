@@ -1,4 +1,6 @@
 <?php
+
+use App\Http\Controllers\EmailVerifyController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -7,7 +9,10 @@ use Illuminate\Support\Facades\Route;
 /**
  * USER
  * */
-Route::middleware('throttle:60,1')->group(function () {
-    Route::post('/users', [UserController::class, 'store']);
-});
-Route::get('users', [UserController::class, 'index']);
+Route::post('/users', [UserController::class, 'store']);
+Route::get('/users', [UserController::class, 'index']);
+
+/**
+ * EMAIL VERIFY
+ */
+Route::get('/verify/{user}', [EmailVerifyController::class, 'verify']);

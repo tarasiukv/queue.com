@@ -2,34 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\UserJob;
+use App\Events\NotifyUserCreatedEvent;
 use App\Models\User;
 use App\Services\UserService;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
+    public UserService $userService;
 
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
     public function index()
     {
         return User::all();
     }
     public function store()
     {
-        $user = User::factory()->create();
-        if (!$user) {
-            return response()->json('User not created', 400);
+        try {
+            DB::beginTransaction();
+            $user = User::factory()->create();
+            Log::info("User created successfully: {$user->email}");
+
+            $this->userService->dispatchEmailJob($user);
+            if (!app('events')->hasListeners(NotifyUserCreatedEvent::class)) {
+                NotifyUserCreatedEvent::dispatch($user);
+            }
+
+            $this->userService->statusVerifyEmail($user);
+
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error('Failed to create users: ' . $e->getMessage());
         }
 
-        UserJob::dispatch($user);
-
-        $this->statusVerifyEmail($user);
-
-        return response()->json($user, 201);
-    }
-
-    public function statusVerifyEmail(User $user)
-    {
-        $user->email_verified_at = now();
-        $user->save();
+        return response()->json(201);
     }
 }
