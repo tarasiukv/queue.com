@@ -16,10 +16,20 @@ class UserController extends Controller
     {
         $this->userService = $userService;
     }
+
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        return User::all();
+        try{
+            return User::all();
+
+        } catch (\Exception $e) {
+            dd('1111111111', $e);
+        }
     }
+
     public function store()
     {
         try {
@@ -43,4 +53,5 @@ class UserController extends Controller
 
         return response()->json(201);
     }
+
 }

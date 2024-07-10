@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Route;
 /**
  * USER
  * */
-Route::post('/users', [UserController::class, 'store']);
-Route::get('/users', [UserController::class, 'index']);
+Route::get('users', [UserController::class, 'index']);
+Route::post('users', [UserController::class, 'store']);
 
 /**
  * EMAIL VERIFY
