@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\NotifyUserCreatedEvent;
+use App\Events\UserRegisteredEvent;
+use App\Http\Resources\UserResource;
+use App\Jobs\UserRegisteredJob;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Support\Facades\DB;
@@ -22,11 +24,19 @@ class UserController extends Controller
      */
     public function index()
     {
-        try{
-            return User::all();
+        $per_page = 100;
+
+        try {
+            $model = User::with([
+                'payments',
+            ])->paginate($per_page);
+
+            return UserResource::collection($model);
 
         } catch (\Exception $e) {
-            dd('1111111111', $e);
+            Log::error('Failed to retrieve users: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to retrieve users'], 500);
+
         }
     }
 
@@ -34,18 +44,15 @@ class UserController extends Controller
     {
         try {
             DB::beginTransaction();
+
             $user = User::factory()->create();
             Log::info("User created successfully: {$user->email}");
 
-            $this->userService->dispatchEmailJob($user);
-            if (!app('events')->hasListeners(NotifyUserCreatedEvent::class)) {
-                NotifyUserCreatedEvent::dispatch($user);
-            }
-
+            UserRegisteredJob::dispatch($user)->onQueue('registration');
             $this->userService->statusVerifyEmail($user);
 
-
             DB::commit();
+
         } catch (\Exception $e) {
             DB::rollback();
             Log::error('Failed to create users: ' . $e->getMessage());

@@ -43,33 +43,19 @@ export default function useUsers() {
     const storeUser = async () => {
         try {
             const response = await axios.post('/api/users', user.value)
-            const response1 = await axios.post('/api/users', user.value)
-            const response2 = await axios.post('/api/users', user.value)
-            const response3 = await axios.post('/api/users', user.value)
-            const response4 = await axios.post('/api/users', user.value)
-            const response5 = await axios.post('/api/users', user.value)
-            const response6 = await axios.post('/api/users', user.value)
-            const response7 = await axios.post('/api/users', user.value)
-            const response8 = await axios.post('/api/users', user.value)
-            const response9 = await axios.post('/api/users', user.value)
-            const response10 = await axios.post('/api/users', user.value)
-            const response20 = await axios.post('/api/users', user.value)
-            const response30 = await axios.post('/api/users', user.value)
-            const response40 = await axios.post('/api/users', user.value)
-            const response50 = await axios.post('/api/users', user.value)
-            const response60 = await axios.post('/api/users', user.value)
-            const response70 = await axios.post('/api/users', user.value)
-            const response80 = await axios.post('/api/users', user.value)
-            const response90 = await axios.post('/api/users', user.value)
-            const response11 = await axios.post('/api/users', user.value)
-            const response21 = await axios.post('/api/users', user.value)
-            const response31 = await axios.post('/api/users', user.value)
-            const response41 = await axios.post('/api/users', user.value)
-            const response51 = await axios.post('/api/users', user.value)
-            const response61 = await axios.post('/api/users', user.value)
-            const response71 = await axios.post('/api/users', user.value)
-            const response81 = await axios.post('/api/users', user.value)
-            const response91 = await axios.post('/api/users', user.value)
+        } catch (e) {
+            console.error('Error:', e);
+        }
+
+        return false;
+    }
+
+    /**
+     * @returns {Promise<boolean>}
+     */
+    const verifyUser = async (user_id) => {
+        try {
+             const response = await axios.post(`/api/verify/${user_id}`)
         } catch (e) {
             console.error('Error:', e);
         }
@@ -81,6 +67,7 @@ export default function useUsers() {
         getUser,
         getUsers,
         storeUser,
+        verifyUser,
         users,
         user,
     }

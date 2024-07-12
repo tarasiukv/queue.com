@@ -21,9 +21,4 @@ class UserService
     {
 
     }
-
-    public function dispatchEmailJob($user) {
-        EmailJob::dispatch($user)->delay(now()->addSeconds($this->delay));
-    }
-
 }

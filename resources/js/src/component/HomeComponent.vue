@@ -1,37 +1,12 @@
 <script setup>
-import {onMounted} from "vue";
+import {onMounted, ref} from "vue";
 import useUsers from "../composables/user.js";
-const {users, getUsers, storeUser } = useUsers();
+import usePay from "../composables/pay.js";
+const {user, users, getUsers, storeUser, verifyUser } = useUsers();
+const { pay } = usePay();
 
 onMounted(async () => {
     await getUsers();
-    window.Echo.channel('sending_to_user_email_channel')
-        .listen('EmailSentEvent', async (e) => {
-            const user = users.find(u => u.id === e.user.id);
-            if (user) {
-                user.emailSent = true;
-            }
-        })
-        .error((err) => {
-            console.log(err)
-        });
-    window.Echo.channel('user.' + user.id)
-        .listen('EmailSentEvent', (e) => {
-            const user = users.find(u => u.id === e.user.id);
-            if (user) {
-                user.emailSent = true;
-            }
-        });
-    window.Echo.channel('notify_user_created_channel')
-        .listen('EmailSentEvent', async (e) => {
-            const user = users.find(u => u.id === e.user.id);
-            if (user) {
-                user.emailSent = true;
-            }
-        })
-        .error((err) => {
-            console.log(err)
-        });
 })
 </script>
 
@@ -42,19 +17,31 @@ onMounted(async () => {
             <p>Click below to create user)</p>
             <button class="submit" type="submit">Create user!</button>
         </div>
-        <div>
-            <p>Click below for payment)</p>
-            <button class="submit" type="submit">Create user!</button>
-        </div>
     </form>
-    <div></div>
-    <ul v-for="user in users" :key="user.id">
-        <li>{{ user }}</li>
-    </ul>
+    <table class="styled-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Verified</th>
+            <th></th>
+            <th>Payed</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="user in users" :key="user.id">
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td v-if="user.email_verified_at">YES</td>
+            <td v-else><button @click="verifyUser(user.id)">verify</button></td>
+            <td>{{ user.payments ? user.payments : null }}</td>
+            <td><button @click="pay(user.id)">PAY</button></td>
+        </tr>
+        </tbody>
+    </table>
 </template>
 
 <style scoped>
-.submit {
-    background: #3ef073;
-}
 </style>

@@ -2,8 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Events\EmailSentEvent;
-use App\Mail\UserMail;
+use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -11,22 +10,21 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
-class EmailJob implements ShouldQueue
+class PaymentJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $user;
-
     public $timeout = 300;
+
+    protected $payment;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(User $user)
+    public function __construct(Payment $payment)
     {
-        $this->user = $user;
+        $this->payment = $payment;
     }
 
     /**
@@ -35,8 +33,12 @@ class EmailJob implements ShouldQueue
     public function handle(): void
     {
         try {
+            $this->payment->load('user');
+            $email = $this->payment->user->email;
+
+            Log::info("Success payment sending to {$email}");
+
             //        Mail::to($this->user->email)->send(new UserMail($this->user));
-            Log::info("Success sending to {$this->user->email}");
 
         } catch (\Exception $e) {
             Log::error("Failed sending to {$this->user->email}: " . $e->getMessage());

@@ -6,3 +6,11 @@
 </p>
 
 # About `QUEUE` in Laravel
+
+## QUEUE: 
+
+    php artisan queue:work
+
+    php artisan queue:work --queue=registration
+
+    php artisan queue:work --queue=payment
