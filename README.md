@@ -6,3 +6,16 @@
 </p>
 
 # About `QUEUE` in Laravel
+
+## QUEUE: 
+
+    php artisan queue:work
+
+    php artisan queue:work --queue=registration
+
+    php artisan queue:work --queue=payment
+
+## App Password
+
+add app password for sending email
+https://myaccount.google.com/apppasswords

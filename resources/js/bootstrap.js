@@ -9,5 +9,6 @@ window.io = io
 
 window.Echo = new Echo({
     broadcaster: 'socket.io',
-    host: import.meta.env.VITE_ECHO_SERVER_HOST + ':' + import.meta.env.VITE_ECHO_SERVER_HOST_PORT,
+    host: '127.0.0.1:6001',
+    // host: window.location.hostname + ':6001'
 });
