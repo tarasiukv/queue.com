@@ -7,11 +7,11 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class UserMail extends Mailable
+class UserRegisteredMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    protected $user;
+    public $user;
 
     /**
      * Create a new message instance.
@@ -21,14 +21,8 @@ class UserMail extends Mailable
         $this->user = $user;
     }
 
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
     public function build()
     {
-        return $this->subject('Welcome to Our Platform')
-            ->view('emails.welcome');
+        return $this->view('emails.registeredUser');
     }
 }

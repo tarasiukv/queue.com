@@ -2,20 +2,20 @@
 
 namespace App\Jobs;
 
+use App\Mail\PaymentMail;
 use App\Models\Payment;
-use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 
 class PaymentJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    public $timeout = 300;
 
     protected $payment;
 
@@ -24,7 +24,15 @@ class PaymentJob implements ShouldQueue
      */
     public function __construct(Payment $payment)
     {
-        $this->payment = $payment;
+        $this->payment = $payment->load('user');
+    }
+
+    /**
+    * @return array
+    */
+    public function middleware()
+    {
+        return [new WithoutOverlapping];
     }
 
     /**
@@ -33,15 +41,15 @@ class PaymentJob implements ShouldQueue
     public function handle(): void
     {
         try {
-            $this->payment->load('user');
-            $email = $this->payment->user->email;
+            $email = $this->payment->user->email ?? null;
 
-            Log::info("Success payment sending to {$email}");
+//            Mail::to($email)->send(new PaymentMail($payment));
+            // test
+            Mail::to('tarasiuk.viktor.m@gmail.com')->send(new PaymentMail($this->payment));
 
-            //        Mail::to($this->user->email)->send(new UserMail($this->user));
-
+            Log::info("Success payment sending from {$email}");
         } catch (\Exception $e) {
-            Log::error("Failed sending to {$this->user->email}: " . $e->getMessage());
+            Log::error("Failed sending from {$email}. Payment model: {$this->payment}. " . $e->getMessage());
         }
     }
 }
