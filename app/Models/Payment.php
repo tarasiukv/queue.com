@@ -13,7 +13,7 @@ class Payment extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'value',
+        'status',
         'user_id'
     ];
 

@@ -41,8 +41,8 @@ class UserRegisteredJob implements ShouldQueue
     public function handle(): void
     {
         try {
-//            Mail::to($this->user->email)->send(new UserRegisteredMail($this->user));
-            Mail::to('tarasiuk.viktor.m@gmail.com')->send(new UserRegisteredMail($this->user));
+            Mail::to($this->user->email)->send(new UserRegisteredMail($this->user));
+//            Mail::to('tarasiuk.viktor.m@gmail.com')->send(new UserRegisteredMail($this->user));
             Log::info("Success registration user: {$this->user->email}");
         } catch (\Exception $e) {
             Log::error("Failed sending to {$this->user->email}: " . $e->getMessage());

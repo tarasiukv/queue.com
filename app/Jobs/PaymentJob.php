@@ -2,16 +2,17 @@
 
 namespace App\Jobs;
 
+use App\Jobs\Middleware\DelayMiddleware;
 use App\Mail\PaymentMail;
 use App\Models\Payment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Queue\Middleware\WithoutOverlapping;
 
 class PaymentJob implements ShouldQueue
 {
@@ -32,7 +33,11 @@ class PaymentJob implements ShouldQueue
     */
     public function middleware()
     {
-        return [new WithoutOverlapping];
+        return [
+            new WithoutOverlapping($this->payment->id),
+            new DelayMiddleware
+            ];
+
     }
 
     /**
@@ -43,9 +48,9 @@ class PaymentJob implements ShouldQueue
         try {
             $email = $this->payment->user->email ?? null;
 
-//            Mail::to($email)->send(new PaymentMail($payment));
+            Mail::to($email)->send(new PaymentMail($this->payment));
             // test
-            Mail::to('tarasiuk.viktor.m@gmail.com')->send(new PaymentMail($this->payment));
+//            Mail::to('tarasiuk.viktor.m@gmail.com')->send(new PaymentMail($this->payment));
 
             Log::info("Success payment sending from {$email}");
         } catch (\Exception $e) {

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->string('value')->nullable();
+            $table->string('status');
             $table->foreignId('user_id')->nullable()
                 ->constrained('users')
                 ->onUpdate('cascade')

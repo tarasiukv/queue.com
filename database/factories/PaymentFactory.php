@@ -14,7 +14,7 @@ class PaymentFactory extends Factory
     {
         return [
             'user_id' => 1,
-            'value' => ' ',
+            'status' => 'pending',
             'created_at' => now(),
             'updated_at' => now(),
         ];
