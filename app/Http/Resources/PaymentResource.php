@@ -16,7 +16,7 @@ class PaymentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'value' => $this->value,
+            'status' => $this->status,
             'user_id' => $this->user_id,
             'user' => new UserResource($this->whenLoaded('user')),
             'created_at' => $this->created_at ? $this->created_at->format('d.m.Y, H:i') : null,

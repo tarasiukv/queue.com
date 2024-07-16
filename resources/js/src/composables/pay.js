@@ -7,7 +7,8 @@ export default function usePay() {
     const pay = async (user_id) => {
         try {
              const response = await axios.post('/api/pays', {
-                 user_id: user_id
+                 user_id: user_id,
+                 status: 'pending'
              })
         } catch (e) {
             console.error('Error:', e);
