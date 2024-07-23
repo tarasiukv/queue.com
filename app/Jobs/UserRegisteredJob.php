@@ -2,8 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Mail\UserRegisteredMail;
 use App\Models\User;
+use App\Services\MailService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -41,8 +41,8 @@ class UserRegisteredJob implements ShouldQueue
     public function handle(): void
     {
         try {
-            Mail::to($this->user->email)->send(new UserRegisteredMail($this->user));
-//            Mail::to('tarasiuk.viktor.m@gmail.com')->send(new UserRegisteredMail($this->user));
+            Mail::to($this->user->email)->send(MailService::send('user_registered', $this->user));
+//            Mail::to('tarasiuk.viktor.m@gmail.com')->send(MailService::send('user_registered', $this->user));
             Log::info("Success registration user: {$this->user->email}");
         } catch (\Exception $e) {
             Log::error("Failed sending to {$this->user->email}: " . $e->getMessage());

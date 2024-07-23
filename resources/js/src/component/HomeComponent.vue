@@ -2,8 +2,22 @@
 import {onMounted, ref} from "vue";
 import useUsers from "../composables/user.js";
 import usePay from "../composables/pay.js";
-const {user, users, getUsers, storeUser, verifyUser } = useUsers();
+const {user, users, getUsers, storeUser, verifyUser, searchUsers } = useUsers();
 const { pay } = usePay();
+
+let searchTimeout = null;
+const search_params = ref({
+    search_text: '',
+    email: '',
+    payments: ''
+});
+
+const performSearch = () => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        searchUsers(search_params.value);
+    }, 800);
+};
 
 onMounted(async () => {
     await getUsers();
@@ -17,6 +31,20 @@ onMounted(async () => {
             <p>Click below to create user)</p>
             <button class="submit" type="submit">Create user!</button>
         </div>
+    </form>
+    <form>
+        <input
+            v-model="search_params.search_text"
+            placeholder="What?"
+        >
+
+        <input type="checkbox" id="verified" v-model="search_params.email" value="verified">
+        <label for="verified"> Verified</label><br>
+
+        <input type="checkbox" v-model="search_params.payments" value="with_payments">
+        <label> With payments</label><br>
+
+        <button @click.prevent="performSearch" class="site-btn">search</button>
     </form>
     <table class="styled-table">
         <thead>

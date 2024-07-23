@@ -53,4 +53,27 @@ class User extends Authenticatable
     {
         return $this->hasMany(Payment::class, 'user_id');
     }
+
+    public function scopeSearch($query, $search_text)
+    {
+        return $query->where(function ($query) use ($search_text) {
+            $query->whereRaw("LOWER(name) like '%" . mb_strtolower($search_text) . "%'")
+                ->orWhereRaw("LOWER(email) like '%" . mb_strtolower($search_text) . "%'");
+        });
+    }
+
+    public function scopeFilterByEmailVerified($query, $email)
+    {
+        if ($email == 'true') {
+            $query->whereNotNull('email_verified_at');
+        }
+        return $query;
+    }
+
+    public function scopeFilterByPayment($query, $payments) {
+        if ($payments == 'true') {
+            $query->whereNotNull('payments');
+        }
+        return $query;
+    }
 }

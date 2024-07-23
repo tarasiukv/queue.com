@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PaymentCreatedEvent;
 use App\Http\Resources\PaymentResource;
 use App\Jobs\PaymentJob;
 use App\Models\Payment;
@@ -42,7 +43,10 @@ class PaymentController extends Controller
 
             DB::commit();
 
-            PaymentJob::dispatch($model)->onQueue('payment');
+            if (!app('events')->hasListeners(PaymentCreatedEvent::class)) {
+                PaymentCreatedEvent::dispatch();
+            }
+//            event(new PaymentCreatedEvent($model));
 
             return $model;
         } catch (\Exception $e) {

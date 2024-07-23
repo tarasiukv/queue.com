@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\PaymentCreatedEvent;
+use App\Listeners\PaymentCreatedListener;
+use App\Services\MailService;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,7 +15,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(MailService::class, function ($app) {
+            return new MailService();
+        });
     }
 
     /**
@@ -19,6 +25,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Event::listen(
+            PaymentCreatedEvent::class,
+            [PaymentCreatedListener::class, 'handle']
+        );
     }
 }

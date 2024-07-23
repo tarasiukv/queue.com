@@ -137,4 +137,8 @@ return [
         App\Providers\BroadcastServiceProvider::class,
     ])->toArray(),
 
+    'aliases' => [
+        'MailService' => App\Facades\MailServiceFacade::class,
+    ],
+
 ];

@@ -63,11 +63,29 @@ export default function useUsers() {
         return false;
     }
 
+    /**
+     * @param search_params
+     * @returns {Promise<void>}
+     */
+    const searchUsers = async (search_params) => {
+        try {
+            const response = await axios.post('/api/users/search', {
+                search_text: search_params.search_text,
+                email: search_params.email,
+                payments: search_params.payments,
+            });
+            users.value = response.data.data;
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
     return {
         getUser,
         getUsers,
         storeUser,
         verifyUser,
+        searchUsers,
         users,
         user,
     }

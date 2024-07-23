@@ -3,8 +3,8 @@
 namespace App\Jobs;
 
 use App\Jobs\Middleware\DelayMiddleware;
-use App\Mail\PaymentMail;
 use App\Models\Payment;
+use MailService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -48,9 +48,9 @@ class PaymentJob implements ShouldQueue
         try {
             $email = $this->payment->user->email ?? null;
 
-            Mail::to($email)->send(new PaymentMail($this->payment));
+//            Mail::to($email)->send(MailService::send('payment', $this->payment));
             // test
-//            Mail::to('tarasiuk.viktor.m@gmail.com')->send(new PaymentMail($this->payment));
+            Mail::to('tarasiuk.viktor.m@gmail.com')->send(MailService::send('payment', $this->payment));
 
             Log::info("Success payment sending from {$email}");
         } catch (\Exception $e) {

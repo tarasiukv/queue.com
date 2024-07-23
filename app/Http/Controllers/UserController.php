@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -48,8 +49,11 @@ class UserController extends Controller
             $user = User::factory()->create();
             Log::info("User created successfully: {$user->email}");
 
-            UserRegisteredJob::dispatch($user)->onQueue('registration');
             $this->userService->statusVerifyEmail($user);
+
+            if (!app('events')->hasListeners(UserRegisteredEvent::class)) {
+                UserRegisteredEvent::dispatch();
+            }
 
             DB::commit();
 
@@ -59,6 +63,25 @@ class UserController extends Controller
         }
 
         return response()->json(201);
+    }
+
+    public function search(Request $request)
+    {
+        try {
+            $search_text = $request['search_text'];
+            $email = $request['email'];
+            $payments = $request['payments'];
+
+            $users = User::search($search_text)
+                ->filterByEmailVerified($email)
+                ->filterByPayment($payments)
+                ->with(['payments'])
+                ->get();
+
+            return response()->json(['data' => $users]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error while search'], 500);
+        }
     }
 
 }
