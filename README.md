@@ -5,9 +5,10 @@
 <a href="https://github.com/tarasiukv/queue.com"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
 </p>
 
-# About `QUEUE` in Laravel
+# Explanatory project `QUEUE` | Laravel
 
 Contains: 
+ - Laravel, Vue.js, vite
  - design paterns: Facade | Factory | Builder |  Singleton
  - Echo server
  - Job
