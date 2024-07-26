@@ -9,7 +9,7 @@
 
 Contains: 
  - Laravel, Vue.js, vite
- - design paterns: Facade | Factory | Builder |  Singleton
+ - design paterns: Facade | Factory | Builder | Observer | Singleton
  - Echo server
  - Job
  - Event
