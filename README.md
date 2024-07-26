@@ -7,7 +7,19 @@
 
 # About `QUEUE` in Laravel
 
-## QUEUE: 
+Contains: 
+ - design paterns: Facade | Factory | Builder |  Singleton
+ - Echo server
+ - Job
+ - Event
+ - Listener
+ - native gmail sender
+
+## COMMANDS:
+
+    laravel-echo-server start
+
+### QUEUE: 
 
     php artisan queue:work
 
