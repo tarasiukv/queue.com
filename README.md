@@ -7,6 +7,13 @@
 
 # Explanatory project `QUEUE` | Laravel
 
+- Test task
+    * [What's inside](#What's inside)
+    * [Commands](#commands)
+    * [Mail](#mail)
+
+# What's inside
+
 Contains: 
  - Laravel, Vue.js, vite
  - design paterns: Facade | Factory | Builder | Observer | Singleton
@@ -28,7 +35,7 @@ Contains:
 
     php artisan queue:work --queue=payment
 
-## App Password
+## MAIL
 
 add app password for sending email
 https://myaccount.google.com/apppasswords
